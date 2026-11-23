@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b3c5d">
+<title>Allowance Tracker</title>
+<style>
+:root{--bg:#e9f3f6;--ink:#12263a;--muted:#546a7b;--line:#cfe1e8;--accent:#0b3c5d;--teal:#00808d;--aqua:#19c3d1;--ok:#1d7a46;--okb:#e3f4ea;--bad:#b3261e;--badb:#fbe7e5;--wait:#8a5a00;--waitb:#fff1d6;--over:#5b3fa0;--overb:#ece6fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+header{background:linear-gradient(135deg,#072a47 0%,#0b5a7a 62%,#00808d 100%);border-bottom:4px solid var(--aqua);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-size:20px;letter-spacing:.3px;display:flex;align-items:center;gap:10px}
+header h1::before{content:"";width:28px;height:28px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2319c3d1' d='M12 2C8 2 4 2.5 4 6v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5V21h2l2-2h4l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM18 11H6V6h12z'/%3E%3C/svg%3E") center/contain no-repeat}
+header p{margin:2px 0 0;font-size:13px;opacity:.88}
+#rf_{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.55);color:#fff;padding:5px 12px;font-size:13px}
+main{max-width:1200px;margin:0 auto;padding:18px 16px 60px}
+.tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.t{background:#fff;border:1px solid var(--line);border-top:3px solid var(--aqua);border-radius:6px;padding:10px 14px;box-shadow:0 1px 3px rgba(11,60,93,.08)}.t span{display:block;color:var(--muted);font-size:13px}.t b{font-size:21px;font-variant-numeric:tabular-nums}.t.hot{border-color:var(--bad)}.t.hot b{color:var(--bad)}
+section{background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:8px;padding:12px 16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(11,60,93,.08)}
+summary{cursor:pointer;color:var(--accent);font-size:16px;font-weight:700;padding:6px 0}details[open]>summary{margin-bottom:10px}summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+form,.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end;margin-bottom:12px}
+form>*,.row>*{min-width:0}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--muted);gap:4px}
+input,select{font:inherit;color:var(--ink);padding:8px;border:1px solid var(--line);border-radius:4px;background:#fff;min-width:0;width:100%;max-width:100%}
+input[type=date],input[type=month]{-webkit-appearance:none;appearance:none;display:block}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;padding:8px 14px;border-radius:4px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.s{background:#fff;color:var(--accent)}button.d{background:#fff;color:var(--bad);border-color:var(--bad)}button.sm{padding:2px 8px;font-size:13px}button:disabled{opacity:.5}
+.w{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:640px}th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left}th{font-size:13px;color:var(--muted);background:#f0f8fa}.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.b{display:inline-block;padding:2px 9px;border-radius:10px;font-size:12.5px;font-weight:600}.Fully{background:var(--okb);color:var(--ok)}.Part,.Open{background:var(--waitb);color:var(--wait)}.Unpaid{background:var(--badb);color:var(--bad)}.Over{background:var(--overb);color:var(--over)}
+.none{padding:14px;color:var(--muted)}#msg{position:fixed;right:16px;bottom:16px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:4px;display:none}
+.m0 td{background:#fff}.m1 td{background:#e8f4f7}.ms td{border-top:2px solid #74aebb}
+.more{text-align:center;padding-top:10px}.more button{min-width:200px}
+@media(max-width:640px){
+header{padding:14px 16px}header h1{font-size:18px}main{padding:12px 8px 50px}section{padding:8px 12px}
+.tot{grid-template-columns:1fr 1fr;gap:8px}.t{padding:8px 10px}.t b{font-size:16px}.t span{font-size:12px}
+form,.row{grid-template-columns:1fr}input,select{min-height:44px;font-size:16px}button{min-height:44px}button.sm{min-height:34px;padding:3px 10px}#rf_{min-height:34px}
+.w{-webkit-overflow-scrolling:touch}
+table{font-size:13px;min-width:600px}th,td{padding:6px 8px}
+.more button{width:100%}#msg{left:12px;right:12px;bottom:12px}
+}
+[hidden]{display:none!important}
+</style></head><body>
+<header><div><h1>Allowance Tracker</h1><p>Requests, credits and matching</p></div><button id="rf_" title="Reload from Google Sheet">Refresh</button></header>
+<main>
+<div class="tot" id="tot"></div>
+
+<section><details id="d1"><summary>1. Requests sent by HOD</summary>
+<form id="rf"><input type="hidden" id="rid">
+<label>Month<input type="month" id="rm" required></label>
+<label>Type<select id="rt"><option>TA</option><option>NIGHT</option><option>SIGN ON</option><option>GH</option><option>NH</option><option>MEDICAL</option><option>LTC</option><option>OTHERS</option></select></label>
+<label id="rol" hidden>Specify other<input id="ro" placeholder="e.g. uniform allowance" maxlength="60"></label>
+<label>Requested (Rs)<input type="number" step="0.01" min="0" id="ra" required></label>
+<label>Sent on<input type="date" id="rs"></label>
+<div><button id="rb">Save request</button> <button type="button" class="s" id="rc" hidden>Cancel</button></div></form>
+<div class="w"><table><thead><tr><th>Month</th><th>Type</th><th class="n">Requested</th><th class="n">Credited</th><th class="n">Pending</th><th>Status</th><th></th></tr></thead><tbody id="rt_"></tbody></table></div><div class="more" id="rtm"></div></details></section>
+
+<section><details id="d2"><summary>2. Credits received in bank</summary>
+<form id="cf"><input type="hidden" id="cid">
+<label>Date<input type="date" id="cd" required></label>
+<label>Amount (Rs)<input type="number" step="0.01" min="0" id="ca" required></label>
+<label>Bank ref<input id="cr"></label>
+<label>Note<input id="cn"></label>
+<div><button id="cb">Save credit</button> <button type="button" class="s" id="cc" hidden>Cancel</button></div></form>
+<div class="w"><table><thead><tr><th>Date</th><th class="n">Amount</th><th>Bank ref</th><th class="n">Matched</th><th class="n">Unmatched</th><th>Note</th><th></th></tr></thead><tbody id="ct"></tbody></table></div><div class="more" id="ctm"></div></details></section>
+
+<section id="ms"><details id="d3"><summary>3. Match credits to requests</summary>
+<div class="row"><label>Credit<select id="mc"></select></label><label>Request<select id="mr"></select></label><label>Match amount (Rs)<input type="number" step="0.01" id="ma"></label>
+<div><button id="mb">Match</button> <button class="s" id="ab" title="Matches only credits equal to a request's pending amount">Auto-match</button></div></div>
+<div class="w"><table><thead><tr><th>Credit</th><th>Pays</th><th class="n">Amount</th><th></th></tr></thead><tbody id="at"></tbody></table></div><div class="more" id="atm"></div></details></section>
+</main><div id="msg" role="status"></div>
+<script>
+/* ====== CONFIG: paste your Apps Script Web App URL (ends with /exec) ====== */
+const API_URL='https://script.google.com/macros/s/AKfycby8BKV6L1aGcw-vmmKuQcPFw9BxznJ4hqCFI5-MNA-MCKufYSkq7K0ZzC1tb__y_PEf/exec';
+/* ========================================================================== */
+
+let D={requests:[],credits:[],allocs:[]};
+const $=i=>document.getElementById(i),f=n=>Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),
+e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),
+cl=s=>({'Fully paid':'Fully','Part paid':'Part','Unpaid':'Unpaid','Overpaid':'Over'}[s]||'Open');
+const SM={'Matched':'Fully paid','Short paid':'Part paid','Pending':'Unpaid','Excess paid':'Overpaid'},lb=s=>SM[s]||s;
+const dmy=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));return m?m[3]+'-'+m[2]+'-'+m[1].slice(2):String(s==null?'':s)},my=s=>{const m=/^(\d{4})-(\d{2})$/.exec(String(s));return m?m[2]+'-'+m[1].slice(2):String(s==null?'':s)};
+const tl=r=>r.type==='OTHERS'&&r.details?'OTHERS: '+r.details:r.type;
+function toast(t){const m=$('msg');m.textContent=t;m.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>m.style.display='none',3500)}
+
+/* ---------- API (replaces google.script.run) ---------- */
+function lsGet(k){try{return localStorage.getItem(k)}catch(x){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(x){}}
+function api(action,args){
+  // No custom headers => "simple request" => no CORS preflight (Apps Script cannot answer one)
+  return fetch(API_URL,{method:'POST',body:JSON.stringify({action:action,args:args||[]})})
+    .then(r=>r.json())
+    .then(j=>{if(!j.ok)throw new Error(j.error);return j.data})
+    .catch(x=>{if(x instanceof TypeError)throw new Error('Cannot reach the server. Check your internet or the Web App URL.');throw x});
+}
+function setData(d){D=d;lsSet('allow_cache',JSON.stringify(d));render()}
+function run(fn,args,ok,btn){if(btn)btn.disabled=true;api(fn,args).then(d=>{setData(d);if(btn)btn.disabled=false;if(ok)ok()}).catch(x=>{if(btn)btn.disabled=false;toast(x.message)})}
+function load(){api('getAll').then(setData).catch(x=>toast(x.message))}
+
+const rq=id=>D.requests.find(x=>x.id===id),cr=id=>D.credits.find(x=>x.id===id);
+let ex={rt_:false,ct:false,at:false};const LIM=1;
+function render(){
+ const R=D.requests,C=D.credits,rt=R.reduce((a,r)=>a+r.requested,0),ct=C.reduce((a,c)=>a+c.amount,0),un=C.reduce((a,c)=>a+c.unmatched,0);
+ $('tot').innerHTML=`<div class="t"><span>Requested</span><b>Rs ${f(rt)}</b></div><div class="t"><span>Credited</span><b>Rs ${f(ct)}</b></div><div class="t ${rt-ct>.005?'hot':''}"><span>Pending</span><b>Rs ${f(rt-ct)}</b></div><div class="t"><span>Unmatched</span><b>Rs ${f(un)}</b></div>`;
+ fill('rt_','rtm',R.slice().sort((a,b)=>b.month.localeCompare(a.month)||a.type.localeCompare(b.type)),r=>r.month,r=>`<td data-label="Month">${e(my(r.month))}</td><td data-label="Type">${e(tl(r))}</td><td class="n" data-label="Requested">${f(r.requested)}</td><td class="n" data-label="Credited">${f(r.credited)}</td><td class="n" data-label="Pending">${f(r.outstanding)}</td><td data-label="Status"><span class="b ${cl(lb(r.status))}">${e(lb(r.status))}</span></td><td style="white-space:nowrap"><button class="s sm" onclick="er('${r.id}')">Edit</button> <button class="d sm" onclick="del('request','${r.id}')">Delete</button></td>`,'No requests yet.',7);
+ fill('ct','ctm',C.slice().sort((a,b)=>b.date.localeCompare(a.date)),c=>c.date.slice(0,7),c=>`<td data-label="Date">${e(dmy(c.date))}</td><td class="n" data-label="Amount">${f(c.amount)}</td><td data-label="Bank ref">${e(c.ref)}</td><td class="n" data-label="Matched">${f(c.matched)}</td><td class="n" data-label="Unmatched">${c.unmatched>.005?'<span class="b Open">'+f(c.unmatched)+'</span>':f(c.unmatched)}</td><td data-label="Note">${e(c.note)}</td><td style="white-space:nowrap">${c.unmatched>.005?`<button class="sm" onclick="pick('${c.id}')">Match</button> `:''}<button class="s sm" onclick="ec('${c.id}')">Edit</button> <button class="d sm" onclick="del('credit','${c.id}')">Delete</button></td>`,'No credits yet.',7);
+ const keep=$('mc').value,open=C.filter(c=>c.unmatched>.005).sort((a,b)=>a.date.localeCompare(b.date));
+ $('mc').innerHTML=open.map(c=>`<option value="${c.id}">${e(dmy(c.date))} - Rs ${f(c.unmatched)} unmatched</option>`).join('')||'<option value="">No unmatched credits</option>';
+ if(open.some(c=>c.id===keep))$('mc').value=keep;suggest();
+ const al=D.allocs.map(a=>({a,c:cr(a.creditId),q:rq(a.requestId)})).filter(x=>x.c&&x.q).sort((x,y)=>y.c.date.localeCompare(x.c.date));
+ fill('at','atm',al,x=>x.c.date.slice(0,7),x=>`<td data-label="Credit">${e(dmy(x.c.date))} - Rs ${f(x.c.amount)}</td><td data-label="Pays">${e(my(x.q.month))} ${e(tl(x.q))}</td><td class="n" data-label="Amount">${f(x.a.amount)}</td><td><button class="d sm" onclick="run('removeAlloc',['${x.a.id}'])">Remove</button></td>`,'Nothing matched yet.',4);
+}
+function fill(tb,bt,items,key,rf,empty,cols){
+ const ms=[...new Set(items.map(key))],shown=ex[tb]?ms:ms.slice(0,LIM),hid=ms.length-shown.length;let prev=null;
+ $(tb).innerHTML=items.filter(x=>shown.includes(key(x))).map(x=>{const k=key(x),first=k!==prev;prev=k;return `<tr class="m${ms.indexOf(k)%2}${first?' ms':''}">${rf(x)}</tr>`}).join('')||`<tr><td class="none" colspan="${cols}">${empty}</td></tr>`;
+ $(bt).innerHTML=ms.length>LIM?`<button class="s" onclick="tg('${tb}')">${ex[tb]?'&#9650; Show less':'&#9660; Show more ('+hid+' older month'+(hid==1?'':'s')+')'}</button>`:'';
+}
+function tg(t){ex[t]=!ex[t];render()}
+function suggest(){const c=cr($('mc').value);if(!c){$('mr').innerHTML='<option value="">-</option>';$('ma').value='';return}
+ const o=D.requests.filter(r=>r.outstanding>.005).sort((a,b)=>Math.abs(a.outstanding-c.unmatched)-Math.abs(b.outstanding-c.unmatched)||a.month.localeCompare(b.month));
+ $('mr').innerHTML=o.map((r,i)=>`<option value="${r.id}">${i?'':'Suggested: '}${e(my(r.month))} ${e(tl(r))} (pending ${f(r.outstanding)})</option>`).join('')||'<option value="">No pending requests</option>';amt()}
+function amt(){const c=cr($('mc').value),r=rq($('mr').value);$('ma').value=c&&r?Math.min(c.unmatched,r.outstanding).toFixed(2):''}
+$('mc').onchange=suggest;$('mr').onchange=amt;
+function pick(id){$('d3').open=true;$('mc').value=id;suggest();$('ms').scrollIntoView({behavior:'smooth'})}
+$('mb').onclick=()=>{if(!$('mc').value||!$('mr').value)return toast('Choose a credit and a request.');run('allocate',[$('mc').value,$('mr').value,$('ma').value],()=>toast('Matched'),$('mb'))};
+$('ab').onclick=()=>{const n=D.allocs.length;run('autoMatch',[],()=>toast((D.allocs.length-n)+' exact match(es) made'),$('ab'))};
+$('rf').onsubmit=ev=>{ev.preventDefault();const t=$('rt').value,old=rq($('rid').value),p={id:$('rid').value,month:$('rm').value,type:t,requested:$('ra').value,sentOn:$('rs').value};
+ if(t==='OTHERS'){p.details=$('ro').value.trim();if(!p.details)return toast('Please type what OTHERS is for.')}else if(old&&old.type==='OTHERS')p.details='';
+ run('saveRequest',[p],()=>{rr();toast('Saved')},$('rb'))};
+function sy(){const o=$('rt').value==='OTHERS';$('rol').hidden=!o;$('ro').required=o;if(!o)$('ro').value=''}
+$('rt').onchange=sy;
+$('cf').onsubmit=ev=>{ev.preventDefault();run('saveCredit',[{id:$('cid').value,date:$('cd').value,amount:$('ca').value,ref:$('cr').value,note:$('cn').value}],()=>{cc_();toast('Saved')},$('cb'))};
+function rr(){$('rf').reset();sy();$('rid').value='';$('rb').textContent='Save request';$('rc').hidden=true}
+function cc_(){$('cf').reset();$('cid').value='';$('cb').textContent='Save credit';$('cc').hidden=true}
+$('rc').onclick=rr;$('cc').onclick=cc_;
+function er(id){const r=rq(id);$('d1').open=true;$('rid').value=r.id;$('rm').value=r.month;$('rt').value=r.type;$('ro').value=r.type==='OTHERS'?(r.details||''):'';$('rol').hidden=r.type!=='OTHERS';$('ro').required=r.type==='OTHERS';$('ra').value=r.requested;$('rs').value=r.sentOn;$('rb').textContent='Update request';$('rc').hidden=false;$('rf').scrollIntoView({behavior:'smooth'})}
+function ec(id){const c=cr(id);$('d2').open=true;$('cid').value=c.id;$('cd').value=c.date;$('ca').value=c.amount;$('cr').value=c.ref;$('cn').value=c.note;$('cb').textContent='Update credit';$('cc').hidden=false;$('cf').scrollIntoView({behavior:'smooth'})}
+function del(k,id){if(confirm('Delete this '+k+'? Its matches are removed too.'))run('removeItem',[k,id],()=>toast('Deleted'))}
+$('rf_').onclick=load;
+
+/* show last saved data instantly, then refresh from the sheet */
+try{const c=JSON.parse(lsGet('allow_cache')||'null');if(c){D=c;render()}}catch(x){}
+load();
+</script></body></html>
